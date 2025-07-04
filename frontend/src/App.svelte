@@ -1,48 +1,55 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
+  import { authStore, isAuthenticated } from './lib/stores/auth.store.js';
+  import LoginForm from './lib/components/LoginForm.svelte';
+  import Dashboard from './lib/components/Dashboard.svelte';
   import './app.css';
-  import svelteLogo from './assets/svelte.svg';
-  import viteLogo from '/vite.svg';
-  import Counter from './lib/Counter.svelte';
+
+  let loading = true;
+
+  onMount(() => {
+    // Initialize auth from localStorage
+    authStore.initFromStorage();
+    loading = false;
+  });
+
+  function handleLogout() {
+    authStore.logout();
+  }
 </script>
 
-<main>
-  <div>
-    <a href="https://vite.dev" target="_blank" rel="noreferrer">
-      <img src={viteLogo} class="logo" alt="Vite Logo" />
-    </a>
-    <a href="https://svelte.dev" target="_blank" rel="noreferrer">
-      <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
-    </a>
+<main class="min-h-screen bg-gray-50">
+  <div class="container mx-auto px-4 py-8">
+    <header class="mb-8">
+      <div class="flex items-center justify-between">
+        <h1 class="text-3xl font-bold text-gray-900">
+          🥬 CSA Management
+        </h1>
+        {#if $isAuthenticated}
+          <button
+            on:click={handleLogout}
+            class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+          >
+            Logout
+          </button>
+        {/if}
+      </div>
+    </header>
+
+    {#if loading}
+      <div class="flex items-center justify-center">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+      </div>
+    {:else if $isAuthenticated}
+      <Dashboard />
+    {:else}
+      <LoginForm />
+    {/if}
   </div>
-  <h1>Vite + Svelte</h1>
-
-  <div class="card">
-    <Counter />
-  </div>
-
-  <p>
-    Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank" rel="noreferrer">SvelteKit</a>, the official Svelte app framework powered by Vite!
-  </p>
-
-  <p class="read-the-docs">
-    Click on the Vite and Svelte logos to learn more
-  </p>
 </main>
 
 <style>
-  .logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-    transition: filter 300ms;
-  }
-  .logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
-  }
-  .logo.svelte:hover {
-    filter: drop-shadow(0 0 2em #ff3e00aa);
-  }
-  .read-the-docs {
-    color: #888;
+  :global(body) {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   }
 </style>
