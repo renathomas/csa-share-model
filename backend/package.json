@@ -11,6 +11,9 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx migrate.ts",
     "db:studio": "drizzle-kit studio",
+    "worker": "tsx src/worker.ts",
+    "worker:dev": "tsx watch src/worker.ts",
+    "dashboard": "ENABLE_DASHBOARD=true tsx src/dashboard/index.ts",
     "test": "vitest"
   },
   "dependencies": {

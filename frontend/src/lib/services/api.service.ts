@@ -121,6 +121,97 @@ class ApiService {
   async getAddons() {
     return this.request('/addons');
   }
+
+  // Payment endpoints
+  async createPaymentIntent(subscriptionId: string) {
+    return this.request('/payments/create-intent', {
+      method: 'POST',
+      body: JSON.stringify({ subscriptionId }),
+    });
+  }
+
+  async processSubscriptionPayment(data: {
+    subscriptionId: string;
+    paymentMethodId: string;
+    amount: number;
+  }) {
+    return this.request('/payments/process-subscription', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async processAddonPayment(orderId: string, paymentMethodId: string) {
+    return this.request('/payments/process-addon', {
+      method: 'POST',
+      body: JSON.stringify({ orderId, paymentMethodId }),
+    });
+  }
+
+  async getCustomerPaymentMethods() {
+    return this.request('/payments/payment-methods');
+  }
+
+  async savePaymentMethod(paymentMethodId: string) {
+    return this.request('/payments/save-payment-method', {
+      method: 'POST',
+      body: JSON.stringify({ paymentMethodId }),
+    });
+  }
+
+  async deletePaymentMethod(paymentMethodId: string) {
+    return this.request(`/payments/payment-methods/${paymentMethodId}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async getPaymentHistory(limit = 20, offset = 0) {
+    return this.request('/payments/history', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  }
+
+  // Order management endpoints
+  async getOrder(orderId: string) {
+    return this.request(`/orders/${orderId}`);
+  }
+
+  async lockOrder(orderId: string) {
+    return this.request(`/orders/${orderId}/lock`, {
+      method: 'POST',
+    });
+  }
+
+  async fulfillOrder(orderId: string) {
+    return this.request(`/orders/${orderId}/fulfill`, {
+      method: 'POST',
+    });
+  }
+
+  async cancelOrder(orderId: string) {
+    return this.request(`/orders/${orderId}/cancel`, {
+      method: 'POST',
+    });
+  }
+
+  // Notification endpoints
+  async getUserNotifications(limit = 20, offset = 0) {
+    return this.request('/notifications', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  }
+
+  async markNotificationAsRead(notificationId: string) {
+    return this.request(`/notifications/${notificationId}/read`, {
+      method: 'POST',
+    });
+  }
 }
 
 export const apiService = new ApiService(); 

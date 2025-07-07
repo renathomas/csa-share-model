@@ -4,6 +4,8 @@ import { AppError } from '../middlewares/error-handler.js';
 import { eq } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
 import { config } from '../config/index.js';
+import { orderQueue } from '../config/queues.js';
+import type { OrderProcessingJob } from '../config/queues.js';
 
 export class SubscriptionService {
   async createSubscription(data: any) {
@@ -45,7 +47,26 @@ export class SubscriptionService {
       stripeSubscriptionId: null
     }).returning();
 
-    return subscription[0];
+    const createdSubscription = subscription[0];
+
+    if (!createdSubscription) {
+      throw new AppError('Failed to create subscription', 500);
+    }
+
+    // Queue job to create orders for this subscription
+    await orderQueue()!.add(
+      'create-orders',
+      {
+        type: 'CREATE_ORDERS',
+        subscriptionId: createdSubscription.id,
+        userId: userId,
+      } as OrderProcessingJob,
+      {
+        delay: 1000, // Small delay to ensure transaction is committed
+      }
+    );
+
+    return createdSubscription;
   }
 
   async getSubscriptionById(id: string) {
