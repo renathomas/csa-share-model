@@ -1,7 +1,7 @@
 import express from 'express';
 import basicAuth from 'express-basic-auth';
 import { createBullBoard } from '@bull-board/api';
-import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
+import { BullMQAdapter } from '@bull-board/api/bullMQAdapter.js';
 import { ExpressAdapter } from '@bull-board/express';
 import { initQueues, queues, queueSpecs } from '../config/queues.js';
 import { config } from '../config/index.js';

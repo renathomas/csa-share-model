@@ -17,6 +17,8 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@bull-board/api": "^6.11.0",
+    "@bull-board/express": "^6.11.0",
     "@csa/shared": "file:../packages/shared",
     "bcrypt": "^5.1.1",
     "bullmq": "^4.15.8",
@@ -25,6 +27,7 @@
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.44.2",
     "express": "^4.18.2",
+    "express-basic-auth": "^1.2.1",
     "express-rate-limit": "^7.1.5",
     "express-validator": "^7.0.1",
     "helmet": "^7.1.0",
